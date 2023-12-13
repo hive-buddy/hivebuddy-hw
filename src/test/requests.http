@@ -1,0 +1,10 @@
+# GET http://localhost:8080/api/v1/data
+
+POST http://localhost:8080/api/v1/data
+Content-Type: application/json
+
+{
+    "sensorTypeId": 2,
+    "hiveId": 1,
+    "value": 42
+}
