@@ -1,11 +1,11 @@
 package be.kdg.team9.hivebuddy.data;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;
 //import com.fazecast.jSerialComm.SerialPortEventListener;
 import com.fazecast.jSerialComm.SerialPortEvent;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -102,11 +102,12 @@ import java.util.List;
 
 @Service
 //public class ArduinoDataReceiver implements SerialPortEventListener {
-public class ArduinoDataReceiver implements SerialPortDataListener {
+public class DataService implements SerialPortDataListener {
     private StringBuilder currentMessage = new StringBuilder();
     private ObjectMapper objectMapper = new ObjectMapper();
     private File jsonFile = new File("receivedData.json");
     private String updateUrl = "http://localhost:8080/api/v1/data";
+    private String realtimeUrl = "http://localhost:8080/api/v1/data/realtime";
 
     private RestTemplate restTemplate = new RestTemplate();
     private HttpHeaders headers = new HttpHeaders();
@@ -170,6 +171,8 @@ public class ArduinoDataReceiver implements SerialPortDataListener {
 //        Long hive_id = Long.parseLong(String.valueOf(info[0]));
         int hive_id = Integer.parseInt(String.valueOf(info[0]));
 //        List<SensorData> sensorDataList = new ArrayList<>();
+        JSONObject sensorDataList = new JSONObject();
+        JSONArray sensorDataArr = new JSONArray();
         LocalDateTime timestamp = LocalDateTime.now();
         for (int i = 0; i < parts.length; i++){
             // 1 - temperatureOut, 2 - temperatureIn, 3 - humidityIn, 4 - weight, 5 - mic
@@ -191,11 +194,13 @@ public class ArduinoDataReceiver implements SerialPortDataListener {
             jsonObject.put("value", Double.parseDouble(String.valueOf(parts[i])));
             jsonObject.put("timestamp", timestamp);
 
+            sensorDataArr.put(jsonObject);
             HttpEntity<String> request = new HttpEntity<>(jsonObject.toString(), headers);
 //        URI locationHeader =
             restTemplate.postForLocation(updateUrl, request);
         }
 //        System.out.println();
+        sensorDataList.put("result", sensorDataArr.toString());
 //        showRealtime(sensorDataList);
 //        String time = parts[0];
 //        String humidity = parts[1];
@@ -219,7 +224,15 @@ public class ArduinoDataReceiver implements SerialPortDataListener {
 //        sensorDataService.addNewData(sensorData);
 //    }
 
-//    private void showRealtime(List<SensorData> sensorDataList){
+    private void showRealtime(JSONObject sensorDataList){
 //        sensorDataService.showRealtime(sensorDataList);
-//    }
+//        JSONObject jsonObject = new JSONObject();
+////        jsonObject.put("id", 1);
+//        for (int i = 0; i < sensorDataList.size(); i++){
+//            jsonObject.put(String.valueOf(i),sensorDataList.get(i));
+//        }
+        HttpEntity<String> request = new HttpEntity<>(sensorDataList.toString(), headers);
+//        URI locationHeader =
+        restTemplate.postForLocation(realtimeUrl, request);
+    }
 }

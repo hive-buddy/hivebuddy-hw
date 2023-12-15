@@ -1,21 +1,19 @@
 package be.kdg.team9.hivebuddy.services;
 
-import be.kdg.team9.hivebuddy.data.ArduinoDataReceiver;
+import be.kdg.team9.hivebuddy.data.DataService;
 import com.fazecast.jSerialComm.SerialPort;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Timer;
-
 @Service
 public class ArduinoService {
 
-    private final ArduinoDataReceiver dataReceiver;
+    private final DataService dataReceiver;
 //    private final SensorDataService sensorDataService;
 
     @Autowired
 //    public ArduinoService(ArduinoDataReceiver dataReceiver, SensorDataService sensorDataService) {
-    public ArduinoService(ArduinoDataReceiver dataReceiver) {
+    public ArduinoService(DataService dataReceiver) {
         this.dataReceiver = dataReceiver;
 //        this.sensorDataService = sensorDataService;
     }
