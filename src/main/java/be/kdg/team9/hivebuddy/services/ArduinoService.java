@@ -24,7 +24,11 @@ public class ArduinoService {
         // Mac Sofiia
 //        var sp = SerialPort.getCommPort("/dev/cu.usbmodem112301");
         // Win Ross
+<<<<<<< HEAD
         var sp = SerialPort.getCommPort("COM6");
+=======
+        var sp = SerialPort.getCommPort("COM7");
+>>>>>>> 6c398e646654deaccf56496d2f3740d4a2859d1e
 
         sp.setComPortParameters(9600, Byte.SIZE, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
         sp.setComPortTimeouts(SerialPort.TIMEOUT_WRITE_BLOCKING, 0, 0);
